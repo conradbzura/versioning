@@ -325,50 +325,6 @@ VersionSegment = Optional[
 segment = type("segment", (property,), {})
 
 
-T = TypeVar("T", bound=Version)
-
-
-class VersionParser(Generic[T]):
-    """
-    Parses version strings into version objects.
-
-    This class is used to parse version strings into instances of the specified
-    version class. It supports custom version patterns and provides a callable
-    interface for parsing.
-
-    A custom parsing pattern may optionally be specified. This pattern must
-    specify all named capture groups required for the version type as defined
-    by its "segment" properties.
-
-    Registered parsers may be accessed as attributes, e.g. `parser.git()`.
-    """
-
-    def __init__(self, version_class: Type[T]):
-        self.version_class = version_class
-
-    def __call__(
-        self, version: str, *, pattern: re.Pattern | None = None
-    ) -> T:
-        if pattern is not None:
-            missing_capture_groups = set(
-                self.version_class.PATTERN.groupindex.keys()
-            ) - set(pattern.groupindex.keys())
-            if missing_capture_groups:
-                raise NonConformingVersionPattern(missing_capture_groups)
-        else:
-            pattern = self.version_class.PATTERN
-        match = pattern.match(version)
-        if not match:
-            raise NonConformingVersionString(version, pattern)
-        segments: dict[str, str] = {
-            k: v for k, v in match.groupdict().items() if v is not None
-        }
-        return self.version_class(**segments)
-
-    def __getattr__(self, attribute):
-        return lambda: self(__version_parsers__[attribute]())
-
-
 class VersionMeta(type):
     @property
     def parse(cls: type[Version]):
@@ -440,6 +396,50 @@ class Version(metaclass=VersionMeta):
 
     def values(self):
         return self._dict.values()
+
+
+T = TypeVar("T", bound=Version)
+
+
+class VersionParser(Generic[T]):
+    """
+    Parses version strings into version objects.
+
+    This class is used to parse version strings into instances of the specified
+    version class. It supports custom version patterns and provides a callable
+    interface for parsing.
+
+    A custom parsing pattern may optionally be specified. This pattern must
+    specify all named capture groups required for the version type as defined
+    by its "segment" properties.
+
+    Registered parsers may be accessed as attributes, e.g. `parser.git()`.
+    """
+
+    def __init__(self, version_class: Type[T]):
+        self.version_class = version_class
+
+    def __call__(
+        self, version: str, *, pattern: re.Pattern | None = None
+    ) -> T:
+        if pattern is not None:
+            missing_capture_groups = set(
+                self.version_class.PATTERN.groupindex.keys()
+            ) - set(pattern.groupindex.keys())
+            if missing_capture_groups:
+                raise NonConformingVersionPattern(missing_capture_groups)
+        else:
+            pattern = self.version_class.PATTERN
+        match = pattern.match(version)
+        if not match:
+            raise NonConformingVersionString(version, pattern)
+        segments: dict[str, str] = {
+            k: v for k, v in match.groupdict().items() if v is not None
+        }
+        return self.version_class(**segments)
+
+    def __getattr__(self, attribute):
+        return lambda: self(__version_parsers__[attribute]())
 
 
 @functools.total_ordering
