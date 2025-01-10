@@ -462,16 +462,16 @@ class PythonicVersion(Version):
     """
 
     PATTERN: Final[re.Pattern] = re.compile(
-        r"v?"
-        r"((?P<epoch>\d+)(?:!))?"
-        r"(?P<major_release>\d+)?"
-        r"(?:(?:\.)(?P<minor_release>\d+))?"
-        r"((?P<release_cycle>\.|a|b|rc)"
-        r"(?P<patch_release>\d+))?"
-        r"((?:\.post)(?P<post_release>\d+))?"
-        r"((?:\.dev)(?P<dev_release>\d+))?"
-        r"((?:\+)(?P<local_identifier>[a-zA-Z0-9.]+))?"
-        r"$"
+        r"""v?
+        ((?P<epoch>\d+)(?:!))?
+        (?P<major_release>\d+)?
+        (?:(?:\.)(?P<minor_release>\d+))?
+        ((?P<release_cycle>\.|a|b|rc)
+        (?P<patch_release>\d+))?
+        ((?:\.post)(?P<post_release>\d+))?
+        ((?:\.dev)(?P<dev_release>\d+))?
+        ((?:\+)(?P<local_identifier>[a-zA-Z0-9.]+))?
+        $"""
     )
 
     def __init__(
@@ -621,13 +621,13 @@ class SemanticVersion(Version):
     """
 
     PATTERN: Final[re.Pattern] = re.compile(
-        r"^v?"
-        r"(?P<major_release>0|[1-9]\d*)"
-        r"\.(?P<minor_release>0|[1-9]\d*)"
-        r"\.(?P<patch_release>0|[1-9]\d*)"
-        r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
-        r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?"
-        r"$"
+        r"""^v?
+        (?P<major_release>0|[1-9]\d*)
+        \.(?P<minor_release>0|[1-9]\d*)
+        \.(?P<patch_release>0|[1-9]\d*)
+        (?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?
+        (?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?
+        $"""
     )
 
     def __init__(
