@@ -9,10 +9,13 @@ setuptools.setup(
             "git=src.versioning._git"
         ],
     },
+    extras_require={
+        "tests": ["pytest", "pytest-mock", "debugpy", "pyyaml"]
+    },
     include_package_data=True,
     install_requires=["GitPython"],
     name="versioning",
-    packages=setuptools.find_packages(include=["src"]),
     package_dir={"": "src"},
+    packages=setuptools.find_packages(include=["src"]),
     version="0.1.0-rc1",
 )
