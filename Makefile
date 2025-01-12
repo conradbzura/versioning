@@ -1,4 +1,11 @@
-.PHONY: tests
+.PHONY: help tests debug-tests update-tests clean-imports
+
+help:
+# List all make targets
+
+	@echo "Available targets:"
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  %-20s %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":"}; {printf "  %-20s\n", $$1}' | sort | uniq
 
 tests:
 	pytest tests/ $(PYTEST_ARGS)
