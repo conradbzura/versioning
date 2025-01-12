@@ -327,8 +327,14 @@ segment = type("segment", (property,), {})
 
 class VersionMeta(type):
     @property
-    def parse(cls: type[Version]):
+    def parse(cls: type[Version]) -> VersionParser:
         return VersionParser(cls)
+
+    @property
+    def segments(cls: type[Version]) -> dict[str, segment]:
+        return {
+            k: v for k, v in cls.__dict__.items() if isinstance(v, segment)
+        }
 
 
 class Version(metaclass=VersionMeta):
@@ -340,6 +346,8 @@ class Version(metaclass=VersionMeta):
     """
 
     PATTERN: re.Pattern
+
+    segments: dict[str, segment]
 
     def __init__(self):
         self._dict: dict[str, VersionSegment] = {
@@ -379,14 +387,6 @@ class Version(metaclass=VersionMeta):
             return {k: v for k, v in list(self.items())[slice(start, stop)]}
         else:
             return self._dict[item]
-
-    @property
-    def segments(self):
-        return {
-            k: v
-            for k, v in type(self).__dict__.items()
-            if isinstance(v, segment)
-        }
 
     def keys(self):
         return self._dict.keys()
@@ -521,15 +521,18 @@ class PythonicVersion(Version):
             )
 
     def __lt__(self, other: PythonicVersion) -> bool:
-        for segment in self.segments:
-            this, that = getattr(self, segment), getattr(other, segment)
-            if this is None:
-                this = -1
-            if that is None:
-                that = -1
-            if this != that:
-                return this < that
-        return False
+        if isinstance(other, PythonicVersion):
+            for segment in PythonicVersion.segments:
+                this, that = getattr(self, segment), getattr(other, segment)
+                if this is None:
+                    this = -1
+                if that is None:
+                    that = -1
+                if this != that:
+                    return this < that
+            return False
+        else:
+            return super().__lt__(other)
 
     @segment
     def epoch(self) -> Optional[NumericVersionSegment]:
@@ -611,8 +614,6 @@ class SemanticVersion(Version):
 
     Examples:
         >>> version = SemanticVersion(major_release=1, minor_release=0, patch_release=0)
-        >>> repr(version)
-        "<SemanticVersion: '1.0.0'>"
         >>> str(version)
         '1.0.0'
         >>> version.minor_release += 1
@@ -649,6 +650,8 @@ class SemanticVersion(Version):
         self._pre_release = (
             pre_release.split(".")
             if isinstance(pre_release, str)
+            else [pre_release]
+            if isinstance(pre_release, int)
             else pre_release
         )
         self._build = build
@@ -670,7 +673,7 @@ class SemanticVersion(Version):
 
     def __lt__(self, other: SemanticVersion) -> bool:
         if isinstance(other, SemanticVersion):
-            for segment in self.segments:
+            for segment in SemanticVersion.segments:
                 this, that = getattr(self, segment), getattr(other, segment)
                 if segment == "pre_release":
                     if this is None:
@@ -712,9 +715,9 @@ class SemanticVersion(Version):
     @segment
     def build(self) -> Optional[AlphanumericVersionSegment]:
         return (
-            self.build
-            if self.build is None
-            else AlphanumericVersionSegment(self.build, format="+{}")
+            self._build
+            if self._build is None
+            else AlphanumericVersionSegment(str(self._build), format="+{}")
         )
 
     @property
