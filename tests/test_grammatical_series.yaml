@@ -1,0 +1,8 @@
+grammatical_series("apple"): >-
+    "apple"
+grammatical_series("apple", "banana"): >-
+    "apple" and "banana"
+grammatical_series("apple", "banana", "cherry"): >-
+    "apple", "banana", and "cherry"
+grammatical_series("apple", "banana, mango", "cherry"): >-
+    "apple", "banana, mango", and "cherry"

@@ -1,0 +1,6 @@
+SemanticVersion(major_release=None): >-
+    raises AssertionError('Major release must be defined')
+SemanticVersion(minor_release=None, patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')
+SemanticVersion(patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')

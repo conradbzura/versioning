@@ -1,0 +1,30 @@
+PythonicVersion(major_release=None): >-
+    raises AssertionError('Major release must be defined')
+PythonicVersion(minor_release=3, patch_release=4): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(minor_release=3, release_cycle="."): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(minor_release=3, release_cycle=".", patch_release=None): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(minor_release=3, release_cycle=None, patch_release=4): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(minor_release=None, patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')
+PythonicVersion(minor_release=None, release_cycle="."): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(minor_release=None, release_cycle=".", patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')
+PythonicVersion(minor_release=None, release_cycle=".", patch_release=None): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(minor_release=None, release_cycle=None, patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')
+PythonicVersion(patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')
+PythonicVersion(release_cycle="."): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(release_cycle=".", patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')
+PythonicVersion(release_cycle=".", patch_release=None): >-
+    raises AssertionError('Patch release and release cycle must be defined together')
+PythonicVersion(release_cycle=None, patch_release=4): >-
+    raises AssertionError('Minor release must be defined if patch release is defined')

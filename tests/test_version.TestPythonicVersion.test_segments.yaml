@@ -1,0 +1,8 @@
+- epoch
+- major_release
+- minor_release
+- release_cycle
+- patch_release
+- post_release
+- dev_release
+- local_identifier
